@@ -1,2 +1,7 @@
 node_modules
 dist
+.env
+# User-specific stuff
+.idea/workspace.xml
+.idea/todo-backend.iml
+.idea/dataSources
