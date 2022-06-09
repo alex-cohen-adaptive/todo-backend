@@ -12,23 +12,25 @@ userRouter
         res.status(200).send(await userService.exists(req.body.email));
         // return next();
     })
-    .post("/users", async (req, res) =>
-        userService.create(req.body)
-            .then(result => {
-                    res.status(200).send(result);
-                }
-            )
-            .catch(err => {
-                res.status(403).send("User already exists")
-            })
-    )
-    .get("/users", async (req, res) => {
+    .post("/users", async (req, res) => {
+            userService.create(req.body)
+                .then(result => {
+                    console.log(result);
+                        res.sendStatus(201).send(result);
+                    }
+                )
+                .catch(err => {
+                    res.sendStatus(403).send("User already exists")
+                })
+        })
+    .get("/users/:id", async (req, res) => {
         console.log(req.body);
-        res.status(200).send(userService.get(req.body));
+        res.status(200).send(userService.get(req.params.id));
 
     })
-    .get("/users/get-all", async(req, res) => {
+    .get("/users", async(req, res) => {
         res.status(200).send(await userService.getAll());
     })
+
 app.use('/users', userRouter);
 export {userRouter};
