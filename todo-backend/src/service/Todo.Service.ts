@@ -1,5 +1,5 @@
 import {ITodo} from "../interface/todo.interface";
-import Todo from "../model/todo.model";
+import Todo from "../model/Todo.Model";
 import mongoose, {mongo, ObjectId, Schema} from "mongoose";
 import {query} from "express";
 

@@ -37,10 +37,19 @@ const SERVER = {
     hostname: SERVER_HOSTNAME,
     port: SERVER_PORT
 };
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+const REFRESH_TOKEN_SECRET= process.env.REFRESH_TOKEN_SECRET;
 
+const JWT ={
+    secret: ACCESS_TOKEN_SECRET,
+    refresh: REFRESH_TOKEN_SECRET
+}
 const config = {
     mongo: MONGO,
-    server: SERVER
+    server: SERVER,
+    jwt: JWT
 };
+
+
 
 export default config;

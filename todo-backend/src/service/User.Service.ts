@@ -1,22 +1,20 @@
-import User from "../model/user.model";
+import User from "../model/User.Model";
 import mongoose from "mongoose";
-import {Result} from "./todo.service";
+import {Result} from "./Todo.Service";
 import {IUser} from "../interface/user.interface";
 import bcrypt from "bcrypt";
-
-const saltRounds = 10;
+import {emitKeypressEvents} from "readline";
 
 interface CRUD {
     exists: (email: string) => Promise<boolean>;
     create: (user: IUser) => Promise<Result>;
     get: (username: string) => Promise<IUser | null>;
     getAll: () => Promise<Array<IUser | null>>;
-    authenticate: (username:string, password:string)=> Promise<IUser | Result>
 }
 
 export class UserService implements CRUD {
 
-    async exists(email: string): Promise<boolean> {
+    public async exists(email: string): Promise<boolean> {
         console.log(email);
         return User.exists({email: email})
             .then(result => {
@@ -53,8 +51,8 @@ export class UserService implements CRUD {
 
     }
 
-    async get(username: string): Promise<IUser | null> {
-        return Promise.resolve(User.findOne({username: username}));
+    async get(email: string): Promise<IUser | null> {
+        return Promise.resolve(User.findOne({email: email}));
     }
 
     async getAll(): Promise<Array<IUser>> {
@@ -66,19 +64,5 @@ export class UserService implements CRUD {
             );
     }
 
-    async authenticate(username: string, password: string): Promise<IUser | Result> {
-        try {
-            const user = await this.get(username);
-            if (user === null ) {
-                return Promise.reject(Result.FAILURE);
-            }
-            const passwordMatches = await bcrypt.compare(password,user.password);
-
-        }
-
-
-
-
-    }
 
 }

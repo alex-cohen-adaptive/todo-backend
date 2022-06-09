@@ -1,10 +1,11 @@
 import express, {Router} from "express";
-import {UserService} from "../service/user.service";
+import {UserService} from "../service/User.Service";
+
 
 const userRouter = Router();
 const app = express();
 
-const userService: UserService = new UserService();
+export const userService: UserService = new UserService();
 
 userRouter
     .put("/users/exists", async (req, res) => {
@@ -25,12 +26,13 @@ userRouter
         })
     .get("/users/:id", async (req, res) => {
         console.log(req.body);
-        res.status(200).send(userService.get(req.params.id));
+        res.sendStatus(200).send(userService.get(req.params.id));
 
     })
     .get("/users", async(req, res) => {
         res.status(200).send(await userService.getAll());
     })
 
+// userRouter.use()
 app.use('/users', userRouter);
 export {userRouter};

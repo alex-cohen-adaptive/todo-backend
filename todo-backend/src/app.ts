@@ -1,15 +1,12 @@
 import express from 'express';
-import {router} from './routes/todo.route';
 import mongoose from 'mongoose';
-import bodyParser from 'body-parser'
 import config from './config/config';
 import logging from "./config/logging";
-import cors from "cors";
-import {userRouter} from "./routes/user.route";
+import {server} from "./Server";
+import {authServer} from "./AuthServer";
+// const app = express();
 
-const app = express();
-
-const NAMESPACE = 'Server';
+export const NAMESPACE = 'Server';
 
 mongoose.connect(config.mongo.url, config.mongo.options)
     .then(result => {
@@ -20,16 +17,20 @@ mongoose.connect(config.mongo.url, config.mongo.options)
     })
 // mongoose.connect("mongodb://admin:password@localhost:27017")
 
-app.use(bodyParser.json())
-app.use(cors());
-
-app.use(router);
-app.use(userRouter);
+// app.use(bodyParser.json())
+// app.use(cors());
+//
+// app.use(router);
+// app.use(userRouter);
 
 const whitelist = ["http://localhost:3000"]
 
-app.listen(3000, () => {
-    console.log('listening to port 3000');
-});
 
-module.exports = app; // for testing
+server.listen(3000, () => {
+    console.log('Regular Server - Listening to Port 3000');
+});
+authServer.listen(3001, () => {
+    console.log('Authorization Server - Listening to Port 3001');
+
+})
+// module.exports = app; // for testing
