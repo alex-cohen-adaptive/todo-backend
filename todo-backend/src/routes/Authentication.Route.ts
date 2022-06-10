@@ -8,7 +8,7 @@ const authRouter = Router();
 const app = express();
 
 
-const authenticationService: AuthenticationService = new AuthenticationService(userService);
+export const authenticationService: AuthenticationService = new AuthenticationService(userService);
 
 authRouter.post("/authenticate", async (req, res) => {
     const result = await authenticationService.signIn(req.body.email, req.body.password);

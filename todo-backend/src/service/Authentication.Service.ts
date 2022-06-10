@@ -8,6 +8,7 @@ import e, {NextFunction} from "express";
 import {UserService} from "./User.Service";
 import {IUser} from "../interface/user.interface";
 import {getSecretAccessToken} from "../utils/utils";
+import {log} from "util";
 
 export class AuthenticationService implements IAuthentication {
     private userService: UserService;
@@ -18,31 +19,29 @@ export class AuthenticationService implements IAuthentication {
 
 
     private generateAccessToken = (email: IUser) => {
-        console.log('generateAccessToken')
-
-        return jwt.sign(email, getSecretAccessToken(), {expiresIn: '15s'})
-
+        console.log("dsad")
+        return jwt.sign({email:email.email}, getSecretAccessToken(), {expiresIn: '15s'})
     }
 
     async signIn(email: string, password: string): Promise<IAccessToken | Result> {
         try {
             const user = await this.userService.get(email)
             if (user === null) {
+                console.log("orange")
                 return Promise.reject(Result.FAILURE);
             }
             if (await bcrypt.compare(password, user.password)) {
                 if (config.jwt.secret && config.jwt.refresh) {
                     const accessToken = this.generateAccessToken(user);
-                    console.log('passed')
-
-                    const refreshToken = jwt.sign(user, config.jwt.refresh);
-
+                    console.log("dsds")
+                    const refreshToken = jwt.sign({email:user.email}, config.jwt.refresh);
                     // const accessToken = jwt.sign({email: user.email}, config.jwt.secret)
                     return Promise.resolve({accessToken: accessToken, refreshToken: refreshToken});
                 }
             }
             return Promise.resolve(Result.FAILURE);
         } catch {
+            console.log()
             return Promise.resolve(Result.FAILURE);
         }
     }
@@ -54,17 +53,17 @@ export class AuthenticationService implements IAuthentication {
             res.send(401);
             return;
         }
-        if (config.jwt.secret) {
-            jwt.verify(token, config.jwt.secret, (error: any, user: any) => {
+        config.jwt.secret && jwt.verify(token, config.jwt.secret, (error: any, user: any) => {
                     if (error) {
-                        return Promise.resolve(Result.FAILURE);
+                        res.send(401);
+                        return
+
+                        // return Promise.resolve(Result.FAILURE);
                     }
                     req.body.user = user;
                 }
             )
         }
-        next();
-    }
 
 }
 

@@ -52,6 +52,7 @@ export class UserService implements CRUD {
     }
 
     async get(email: string): Promise<IUser | null> {
+        console.log("fdsfds")
         return Promise.resolve(User.findOne({email: email}));
     }
 

@@ -1,5 +1,6 @@
 import express, {Router} from 'express';
 import {Page, TodoService} from "../service/Todo.Service";
+import {authenticationService} from "./Authentication.Route";
 
 const router = Router();
 const app = express();
@@ -27,7 +28,7 @@ router
         res.send(await todoService.getAll(new Page(page,size)));
         next();
     })
-    .delete("/todos/:id", async (req,res,next) => {
+    .delete("/todos/:id" ,async (req,res,next) => {
         console.log(req.params.id as string)
         res.sendStatus(200).send(await  todoService.delete(req.params.id))
 

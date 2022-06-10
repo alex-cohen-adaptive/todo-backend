@@ -1,5 +1,6 @@
 import express, {Router} from "express";
 import {UserService} from "../service/User.Service";
+import {authenticationService} from "./Authentication.Route";
 
 
 const userRouter = Router();
@@ -29,7 +30,7 @@ userRouter
         res.sendStatus(200).send(userService.get(req.params.id));
 
     })
-    .get("/users", async(req, res) => {
+    .get("/users", authenticationService.verifyToken ,async(req, res) => {
         res.status(200).send(await userService.getAll());
     })
 
