@@ -62,7 +62,7 @@ export class TodoService implements CRUD {
             .catch(err => {return Promise.resolve(Result.FAILURE);});
     }
 
-    get(id: string): Promise<ITodo|null> {
+     get(id: string): Promise<ITodo|null> {
         return Promise.resolve(Todo.findById({_id:id}));
     }
 

@@ -9,6 +9,7 @@ import {UserService} from "./User.Service";
 import {IUser} from "../interface/user.interface";
 import {getSecretAccessToken} from "../utils/utils";
 import {log} from "util";
+import {combineTableNames} from "sequelize/types/utils";
 
 export class AuthenticationService implements IAuthentication {
     private userService: UserService;
@@ -19,22 +20,25 @@ export class AuthenticationService implements IAuthentication {
 
 
     private generateAccessToken = (email: IUser) => {
-        console.log("dsad")
-        return jwt.sign({email:email.email}, getSecretAccessToken(), {expiresIn: '15s'})
+        return jwt.sign({email: email.email}, getSecretAccessToken(), {expiresIn: '30s'})
     }
 
     async signIn(email: string, password: string): Promise<IAccessToken | Result> {
         try {
             const user = await this.userService.get(email)
-            if (user === null) {
-                console.log("orange")
+            if (user == null) {
                 return Promise.reject(Result.FAILURE);
             }
+            console.log(await bcrypt.compare(password, user.password));
             if (await bcrypt.compare(password, user.password)) {
+                console.log("wtf")
                 if (config.jwt.secret && config.jwt.refresh) {
+                    console.log("wtf")
+
+
                     const accessToken = this.generateAccessToken(user);
-                    console.log("dsds")
-                    const refreshToken = jwt.sign({email:user.email}, config.jwt.refresh);
+                    // console.log("dsds")
+                    const refreshToken = jwt.sign({email: user.email}, config.jwt.refresh);
                     // const accessToken = jwt.sign({email: user.email}, config.jwt.secret)
                     return Promise.resolve({accessToken: accessToken, refreshToken: refreshToken});
                 }
@@ -46,24 +50,25 @@ export class AuthenticationService implements IAuthentication {
         }
     }
 
-    verifyToken(req: e.Request, res: e.Response, next: e.NextFunction): void {
+
+    verifyToken(req: any, res: any, next: any): void {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1];
-        if (token == null) {
+        if (token == null
+        ) {
             res.send(401);
             return;
         }
         config.jwt.secret && jwt.verify(token, config.jwt.secret, (error: any, user: any) => {
-                    if (error) {
-                        res.send(401);
-                        return
-
-                        // return Promise.resolve(Result.FAILURE);
-                    }
-                    req.body.user = user;
+                if (error) {
+                    res.send(401);
+                    return
                 }
-            )
-        }
+                req.user = user;
+                next();
+            }
+        )
+    }
 
 }
 

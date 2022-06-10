@@ -3,12 +3,13 @@ import {Result} from "../service/Todo.Service";
 import {HttpStatusCode} from "../error/StatusCodes.Enum";
 import {AuthenticationService} from "../service/Authentication.Service";
 import {userRouter, userService} from "./User.Route";
+import {UserService} from "../service/User.Service";
 
 const authRouter = Router();
 const app = express();
 
 
-export const authenticationService: AuthenticationService = new AuthenticationService(userService);
+export const authenticationService: AuthenticationService = new AuthenticationService(new UserService());
 
 authRouter.post("/authenticate", async (req, res) => {
     const result = await authenticationService.signIn(req.body.email, req.body.password);
