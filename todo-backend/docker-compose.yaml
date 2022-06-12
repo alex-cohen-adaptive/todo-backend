@@ -1,14 +1,19 @@
 version: '3'
 services:
-      db:
-            image: mongo:latest
-            restart: always
-            ports:
-                  - 27017:27017
-            environment:
-#                  MONGO_INITDB_ROOT_USERNAME: root
-#                  MONGO_INITDB_ROOT_PASSWORD: example
-                  MONGO_INITDB_DATABASE: db
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      #                  MONGO_INITDB_ROOT_USERNAME: root
+      #                  MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: db
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
 
 
 
