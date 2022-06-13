@@ -30,6 +30,16 @@ const MONGO = {
     url: `mongodb://${MONGO_HOST}/${MONGO_DB}`
 };
 
+const REDIS_HOST=process.env.REDIS_HOST || 'redis';
+const REDIS_PORT=process.env.REDIS_PORT || '6379';
+
+
+const REDIS = {
+    host:REDIS_HOST,
+    port: REDIS_PORT,
+    url:`redis://${REDIS_HOST}:${REDIS_PORT}`
+}
+
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost';
 const SERVER_PORT = process.env.SERVER_PORT || 1337;
 
@@ -46,6 +56,7 @@ const JWT ={
 }
 const config = {
     mongo: MONGO,
+    redis:REDIS,
     server: SERVER,
     jwt: JWT
 };

@@ -5,8 +5,9 @@ import logging from "./config/logging";
 import {server} from "./Server";
 import {authServer} from "./AuthServer";
 // const app = express();
-
+// import {mongo} from "./db/Mongo.db";
 export const NAMESPACE = 'Server';
+
 
 mongoose.connect(config.mongo.url, config.mongo.options)
     .then(result => {

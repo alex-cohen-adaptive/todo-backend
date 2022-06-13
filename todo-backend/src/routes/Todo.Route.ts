@@ -7,6 +7,7 @@ const app = express();
 
 const todoService: TodoService = new TodoService();
 
+// app.use("/todos",router);
 router
     .post("/todos", async (req, res, next) => {
         console.log(req.body);
