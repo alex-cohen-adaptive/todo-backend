@@ -25,6 +25,12 @@ authRouter.post("/authenticate", async (req, res) => {
         // res.sendStatus(HttpStatusCode.OK).send(authenticationService.verifyToken(req));
         authenticationService.verifyToken(req,res,next);
     })
+    .post('/token', async (req, res, next) => {
+        const refreshToken = req.body.refreshToken;
+        const result = await authenticationService.refreshToken(refreshToken);
+        console.log(result)
+        res.send(result);
+    })
 
 app.use('/', authRouter);
 export {authRouter};

@@ -3,6 +3,6 @@ import config from "../config/config";
 
 const redisClient =  redis.createClient();
 redisClient.on('connect',() => {
-    console.log('redis client connected');
+    console.log('Redis Client Connected');
 });
 export {redisClient};
