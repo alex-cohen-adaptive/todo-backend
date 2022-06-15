@@ -18,11 +18,11 @@ export class UserService implements CRUD {
         console.log(email);
         return User.exists({email: email})
             .then(result => {
-                    return result !== null
+                    return Promise.resolve(result !== null);
                 }
             )
             .catch(err => {
-                return false
+                return Promise.resolve(false)
             });
     }
 

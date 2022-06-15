@@ -10,7 +10,6 @@ export const userService: UserService = new UserService();
 
 userRouter
     .put("/users/exists", async (req, res) => {
-        console.log(req.body)
         res.status(200).send(await userService.exists(req.body.email));
         // return next();
     })
