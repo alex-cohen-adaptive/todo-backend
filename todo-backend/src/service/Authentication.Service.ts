@@ -4,13 +4,13 @@ import bcrypt from "bcrypt";
 import config from "../config/config";
 import jwt from "jsonwebtoken";
 import {IAuthentication} from "../interface/Authentication.Interface";
-import e, {NextFunction} from "express";
 import {UserService} from "./User.Service";
 import {IUser} from "../interface/user.interface";
 import {getSecretAccessToken} from "../utils/utils";
-import {log} from "util";
-import {combineTableNames} from "sequelize/types/utils";
 import {redisClient} from "../db/RedisConnect.db";
+import {Promise} from "mongoose";
+import {log} from "util";
+import {ILogin} from "../interface/login.interface";
 
 export class AuthenticationService implements IAuthentication {
     private userService: UserService;
@@ -24,17 +24,18 @@ export class AuthenticationService implements IAuthentication {
         return jwt.sign({email: email.email}, getSecretAccessToken(), {expiresIn: '59s'})
     }
 
-    async signIn(email: string, password: string): Promise<IAccessToken | Result> {
+    async signIn(login: ILogin): Promise<IAccessToken | Result> {
         try {
+            const {email, password} = login;
             const user = await this.userService.get(email)
             if (user == null) {
                 return Promise.reject(Result.FAILURE);
             }
             // console.log(await bcrypt.compare(password, user.password));
             if (await bcrypt.compare(password, user.password)) {
-                console.log("wtf")
+                console.log("here"
+                )
                 if (config.jwt.secret && config.jwt.refresh) {
-                    console.log("wtf")
                     const accessToken = this.generateAccessToken(user);
                     const refreshToken = jwt.sign({email: user.email}, config.jwt.refresh);
 
@@ -75,6 +76,7 @@ export class AuthenticationService implements IAuthentication {
         )
     }
 
+
     async refreshToken(refreshToken: string): Promise<IAccessToken | Result> {
         if (refreshToken == undefined) {
             //    todo error handling
@@ -110,5 +112,27 @@ export class AuthenticationService implements IAuthentication {
         // return Promise.resolve(Result.FAILURE);
     }
 
+    async logout(refreshToken:string): Promise<Result> {
+        let result;
+        if (config.jwt.refresh) {
+            await jwt.verify(refreshToken, config.jwt.refresh, async (err: any, user: any) => {
+                if (err) {
+                    return Promise.resolve(Result.FAILURE);
+                }
+                result = await redisClient.del(user.email);
+                console.log(await redisClient.GET(user.email));
+            })
+        }
+        console.log(result);
+
+        if (result) {
+            console.log(result)
+            return Promise.resolve(Result.SUCCESS);
+        }
+        else {
+            return Promise.resolve(Result.FAILURE);
+        }
+
+    }
 }
 
